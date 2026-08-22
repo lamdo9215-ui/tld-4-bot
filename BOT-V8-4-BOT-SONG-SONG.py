@@ -1,8 +1,24 @@
 
 import asyncio
 import os
+from threading import Thread
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from telegram import Bot
 from telegram.constants import ParseMode
+
+class H(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Bot is running")
+    def log_message(self, *args):
+        return
+
+def keep_alive():
+    port = int(os.environ.get("PORT", 10000))
+    Thread(target=lambda: HTTPServer(('0.0.0.0', port), H).serve_forever(), daemon=True).start()
+
+keep_alive()
 
 # === CẤU HÌNH CỦA BẠN ===
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8266700974:AAH..." )  # token con TungLamDo_003
